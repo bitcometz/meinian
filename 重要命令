@@ -1,0 +1,87 @@
+**** 在SQL里面创立表格
+
+方法一
+from odps.models import Schema, Column, Partition
+
+columns = [Column(name='num', type='bigint', comment='the column'),
+	Column(name='num2', type='double', comment='the column2')]
+
+partitions = [Partition(name='pt', type='string', comment='the partition')]
+
+schema = Schema(columns=columns, partitions=partitions)
+
+table = o.create_table('my_new_table', schema, if_not_exists=True)
+
+方法二
+table = o.create_table('my_new_table', 'num bigint, num2 double', if_not_exists=True, lifecycle=7)
+
+**** 读取SQL里面的记录
+part1 = o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part1')
+reader = part1.open_reader()
+count = reader.count
+for record in reader[5:500]:
+    if record[1] == '2403':
+        print record
+
+**** 往SQL表格写东西
+writer = table.open_writer(partition='pt=test', create_partition=True)
+records = [[3, 3.3], [6, 6.6]]
+writer.write(records)
+writer.close()
+
+**** 例如给list写答案
+from odps.models import Schema, Column, Partition
+
+## 创立表格
+columns = [Column(name='vid', type='String', comment='the name'),
+	Column(name='sys', type='bigint', comment='g1'),
+    Column(name='dia', type='bigint', comment='g2'),
+    Column(name='tl', type='double', comment='g3'),
+    Column(name='hdl', type='double', comment='g4'),
+    Column(name='ldl', type='double', comment='g5')]
+partitions = [Partition(name='pt', type='string', comment='the partition')]
+schema = Schema(columns=columns, partitions=partitions)
+
+tableS = o.create_table('meinian_round2_submit_a', schema, if_not_exists=True)
+
+## 读取id
+Y_ans = o.get_table('odps_tc_257100_f673506e024.meinian_round2_train')
+reader = Y_ans.open_reader()
+count = reader.count
+print 'count'
+print count
+
+## 通过加入list写入
+writer = tableS.open_writer(partition='pt=test', create_partition=True)
+records = []
+for record in reader[0:count]:
+    records.append([record[0], 123, 80, 1.6, 1.2, 2.7])
+
+writer.write(records)
+writer.close()
+
+## 验证行数是否正确
+reader = tableS.open_reader(partition='pt=test')
+count2 = reader.count
+
+print 'count2'
+print count2
+
+**** 删除分区, 删除表
+as1.delete_partition('pt=test', if_exists=True)
+o.delete_table('my_table_name', if_exists=True)
+
+
+**** 保存 DataFrame
+pred_sys.persist('test_result', odps=o)
+
+**** 如何使用xgboost & Pai
+https://yq.aliyun.com/articles/138214
+https://help.aliyun.com/document_detail/42745.html?spm=a2c3w.11007039.0.0.54994a9bVCHdRJ
+
+
+
+
+
+
+

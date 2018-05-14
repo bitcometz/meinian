@@ -1,0 +1,11 @@
+import pandas as pd
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+t = o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part1')
+print t.schema
+print t.size
+print t.schema.columns
+

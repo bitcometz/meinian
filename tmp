@@ -1,0 +1,21 @@
+### clean_0409other.py
+
+bing=new_fea['0409']
+nao=bing.apply(nao)
+nao.rename("nao",inplace=True)
+
+shen=bing.apply(shen)
+shen.rename("shen",inplace=True)
+
+wei=bing.apply(wei)
+wei.rename("wei",inplace=True)
+
+list3=[data['vid'],nao,shen,wei]
+all=pd.concat(list3,axis=1)
+ori=pd.read_csv("../data/all.csv",low_memory=False)
+new=pd.merge(ori,all,on=['vid'])
+
+table_name = 'table_cleans'
+odps.delete_table(table_name, if_exists=True)
+DataFrame(new).persist(table_name, odps=o)
+print new_fea.head(1)

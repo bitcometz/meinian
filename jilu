@@ -1,0 +1,64 @@
+import pandas as pd
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+part1 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part1'))
+part2 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part2'))
+data = pd.concat([part1.to_pandas(), part2.to_pandas()])
+
+data_keep_all = data.groupby(['vid','test_id'],as_index=False).apply(lambda df:";".join(map(str, df['results'])))
+data_keep_all = pd.DataFrame(data_keep_all,columns=['results'])
+
+data_fmt_all = data_keep_all.unstack(fill_value=None)
+print data_fmt_all.shape
+
+
+
+
+*****
+
+
+with t.open_writer(partition='pt=test') as writer:
+    records = [[111, 'aaa', True],
+                [222, 'bbb', False],
+                [333, 'ccc', True],
+                [444, '中文', False]]
+     writer.write(records)
+
+import pandas as pd
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+part1 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part1'))
+part2 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part2'))
+data0 = pd.concat([part1.to_pandas(), part2.to_pandas()])
+data = data0.head(5000)
+
+data_keep_all = data.groupby(['vid','test_id'],as_index=False).apply(lambda df:";".join(map(str, df['results'])))
+data_keep_all = pd.DataFrame(data_keep_all,columns=['results'])
+
+data_fmt_all = data_keep_all.unstack(fill_value=None)
+print data_fmt_all.shape
+
+import pandas as pd
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+part1 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part1'))
+part2 = DataFrame(o.get_table('odps_tc_257100_f673506e024.meinian_round2_data_part2'))
+data0 = pd.concat([part1.to_pandas(), part2.to_pandas()])
+data = data0.head(5000)
+
+data_keep_all = data.groupby(['vid','test_id'],as_index=False).apply(lambda df:";".join(map(str, df['results'])))
+data_keep_all = pd.DataFrame(data_keep_all,columns=['results'])
+
+data_fmt_all = data_keep_all.unstack(fill_value=None)
+print data_fmt_all.shape
+
+%persist data_fmt_all try02_table
